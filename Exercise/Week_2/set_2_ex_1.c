@@ -67,7 +67,7 @@ void task_a()
   clock_t tot_time_b = clock() - t0;
   printf("Time of binary reading and writing: %f s\n\n", ((float)tot_time_b) / CLOCKS_PER_SEC);
 
-  printf("The ratio of ascii/binary reading and writing is appoximately: %f\n",\
+  printf("Ratio of ascii/binary reading and writing: %f\n",\
           ((float)tot_time/(float)tot_time_b));
 
 
@@ -77,19 +77,11 @@ void task_a()
 
 
 
-
-
-
-
 int main()
 {
 
+  printf("Task a:\n");
   task_a();
-
-
-
-
-
 
   return 0;
 }
