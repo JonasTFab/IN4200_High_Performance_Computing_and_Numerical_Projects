@@ -1,0 +1,16 @@
+From the lecture notes, we have that:
+"
+The performance at which the floating-point units generate
+results for multiply and add operations is measured as
+floating-point operations per second (Flops/sec).
+"
+From exercise 3, we defined array u and v as a three dimensional
+array with length nx, ny and nz. In exercise 3d we looped in the
+range of nx-2, ny-2 and nz-2 resulting in (nx-2)*(ny-2)*(nz-2)
+*(operations per iteration). Taking a closer look at the iteration
+sequence, we note that we have 7 add operation and 1 multiply
+operation resulting in a total of 8 operations per iteration.
+If we have nx = 10, ny = 5 and nz = 3, the total number of floating-
+point operation are then 8*3*1*8 = 192. To get the FLOPS, we need
+to time the whole process and divide it from the total number
+of floating point operations.
