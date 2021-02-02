@@ -1,0 +1,5 @@
+- try to avoid if-else statement within loops
+- vectorize code (similar to Python's numpy but a little more complex approach. See lecture from 27.01.21)
+- avoid aliasing (lecture 27.01.21)
+- read binary files in stead of ascii files
+
