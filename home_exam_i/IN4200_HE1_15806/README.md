@@ -29,7 +29,7 @@ This command will create a connectivity graph file with five nodes and eight edg
 
 # read_graph_from_file1.c
 
-This function reads the generated connectivity graph file and outputs the number of nodes as and allocates a 2D table of size NxN. The table is then filled with 1 and 0 where 1 means connection between two nodes and 0 means no connection. Row x and column y are presented as node x and node y. Note that since x is connected to y, then y is also connected to x, hence index [x][y] and [y][x] is given the value 1. The results by using the script above is shown below.
+This function reads the generated connectivity graph file and outputs the number of nodes and allocates a 2D table of size NxN. The table is then filled with 1 and 0 where 1 means connection between two nodes and 0 means no connection. Column x and row y are presented as node x and node y. Note that since x is connected to y, then y is also connected to x, hence index [x][y] and [y][x] is given the value 1. The results by using the text file generated above is shown below.
 
 
 ```bash
