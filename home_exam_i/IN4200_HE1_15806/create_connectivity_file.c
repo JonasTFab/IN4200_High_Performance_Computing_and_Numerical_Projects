@@ -20,10 +20,12 @@ int main(int argc, char* argv[])
     exit(0);
   }
 
+
   printf("Creating a new connectivity graph file in .txt format!\n");
 
   int nodes = atoi(argv[1]);
   int edges = atoi(argv[2]);
+
 
   // allocating a 2D array with unique edges
   int **unique_edges = (int**)malloc(edges*sizeof(int*));
@@ -36,13 +38,21 @@ int main(int argc, char* argv[])
   printf("# of nodes:  %d \n", nodes);
   printf("# of edges:  %d \n", edges);
 
+  if (argc>3)
+  {
+    int seed = atoi(argv[3]);
+    printf("Using seed:  %d \n", seed);
+    srandom(seed);                // fixed seed
+  }
+  else srandom(time(NULL));      // random seed
+
 
   // writing the connectivity graph text file
   FILE *file;
 
   file = fopen("connectivity_graph.txt", "w");
   fprintf(file, "# Undirected graph: connectivity_graph.txt\n");
-  fprintf(file, "# Authored by 15806, a IN4200 student. The connectivity-\
+  fprintf(file, "# Authored by a IN4200 student. The connectivity-\
 graph file is generated randomly based on the number of nodes and the \
 number of edges. \n");
   fprintf(file, "# Nodes: %d Edges: %d\n", nodes, edges);
@@ -51,8 +61,7 @@ number of edges. \n");
   int int1, int2, statement;
 
 
-  //srandom(time(NULL));      // random seed
-  srandom(0);           // fixed seed
+
   for (int edge=0; edge<edges; edge++)
   {
     int1 = nodes*random()/RAND_MAX;
