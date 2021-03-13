@@ -7,7 +7,7 @@ void read_graph_from_file1(char *filename, int *N, char ***table2D)
   FILE *file;
   int len_line = 200;
   char read_line[len_line];
-  int edges;
+  int N_edges;
 
   // open text file for reading
   file = fopen(filename, "r");
@@ -21,7 +21,7 @@ void read_graph_from_file1(char *filename, int *N, char ***table2D)
   // reads the third line in text file and define number
   // of nodes and number of edges
   char skip[20];
-  fscanf(file, "%s %s %d %s %d", skip, skip, N, skip, &edges);
+  fscanf(file, "%s %s %d %s %d", skip, skip, N, skip, &N_edges);
   fgets(read_line, len_line, file);  // jumps to next line
 
 
@@ -41,8 +41,8 @@ void read_graph_from_file1(char *filename, int *N, char ***table2D)
 
   // read connections between two nodes from file
   int int1, int2;
-  int tot_edges = edges;
-  for (int i=0; i<edges; i++)
+  int tot_edges = N_edges;
+  for (int i=0; i<N_edges; i++)
   {
     fgets(read_line, len_line, file);
     fscanf(file, "%d %d", &int1, &int2);
@@ -70,9 +70,9 @@ void read_graph_from_file1(char *filename, int *N, char ***table2D)
 
   fclose(file);
 
-  if (edges != tot_edges)
+  if (N_edges != tot_edges)
   {
-    printf("Warning!\n There were %d illegal edges!", edges-tot_edges);
+    printf("Warning!\n There were %d illegal edges!", N_edges-tot_edges);
   }
 
 }
@@ -84,12 +84,11 @@ void read_graph_from_file1(char *filename, int *N, char ***table2D)
 int main()
 {
   char *con_file = "connectivity_graph.txt";
-  //char *con_file = "simple-graph.txt";
   int nodes;
   char **table;
 
-  // reading the text file and allocates the number of
-  // nodes and
+  // read a text file and from it, reads number of nodes
+  // and allocate the connectivty graph as a 2D table
   read_graph_from_file1(con_file, &nodes, &table);
 
 
@@ -105,8 +104,8 @@ int main()
   }
 
 
+  // deallocate table from memory
   free(table);
-  free(*table);
 
 
 
