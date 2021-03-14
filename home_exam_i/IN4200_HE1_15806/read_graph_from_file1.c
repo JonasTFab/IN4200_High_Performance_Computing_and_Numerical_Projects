@@ -72,7 +72,10 @@ void read_graph_from_file1(char *filename, int *N, char ***table2D)
 
   if (N_edges != tot_edges)
   {
-    printf("Warning!\n There were %d illegal edges!", N_edges-tot_edges);
+    printf("Warning! \
+          \nThere were %d (out of %d) illegal edge(s)!\
+          \nThese were excluded in the 2D table!\n\n",
+          N_edges-tot_edges, N_edges);
   }
 
 }

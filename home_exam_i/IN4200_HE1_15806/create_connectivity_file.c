@@ -53,8 +53,8 @@ int main(int argc, char* argv[])
   file = fopen("connectivity_graph.txt", "w");
   fprintf(file, "# Undirected graph: connectivity_graph.txt\n");
   fprintf(file, "# Authored by a IN4200 student. The connectivity-\
-graph file is generated randomly based on the number of nodes and the \
-number of edges. \n");
+graph file is generated randomly based on the number of inserted\
+nodes and the number of edges. \n");
   fprintf(file, "# Nodes: %d Edges: %d\n", nodes, edges);
   fprintf(file, "# FromNodeId ToNodeId\n");
 
@@ -105,7 +105,7 @@ number of edges. \n");
       unique_edges[edge][1] = int2;
     }
 
-    fprintf(file, "%d  %d\n", int1, int2);
+    fprintf(file, "%d %d\n", int1, int2);
   }
 
   fclose(file);

@@ -19,7 +19,6 @@ void read_graph_from_file2(char *filename, int *N, int **row_ptr, int **col_idx)
     fgets(read_line, len_line, file);
   }
 
-
   // reads the third line in text file and define number
   // of nodes and number of edges
   char skip[20];
@@ -27,22 +26,18 @@ void read_graph_from_file2(char *filename, int *N, int **row_ptr, int **col_idx)
   fgets(read_line, len_line, file);  // jumps to next line
 
 
-  // allocates row_ptr and col_idx as 1D arrays (in a CRS format)
-  *row_ptr = (int*)malloc((*N+1)*sizeof(int));     // defined length of row_ptr
-  *col_idx = (int*)malloc(2*N_edges*sizeof(int));  // defined length of col_idx
-
-
-  // count occurance of each node and connections to each node
+  // arrays used for counting occurance of
+  // each node and connections to each node.
+  // This method is used so that we do not need to
+  // read the text file multiple times but only once
   int *count_nodes;
   char **count_connections;
   count_nodes = (int*)malloc(*N*sizeof(int));
   count_connections = (char**)malloc(*N*sizeof(char*));
   for (int i=0; i<*N; i++)
   {
-    count_nodes[i] = 0;
-    count_connections[i] = (char*)malloc(50);
+    count_connections[i] = (char*)malloc(500);
   }
-
 
 
   // read connectivity pair from text file
@@ -54,113 +49,71 @@ void read_graph_from_file2(char *filename, int *N, int **row_ptr, int **col_idx)
     fgets(read_line, len_line, file);
     fscanf(file, "%d %d", &int1, &int2);
 
-    count_nodes[int1]++;
-    count_nodes[int2]++;
-
-    sprintf(num, "%d ", int2);
-    strcat(count_connections[int1], num);
-
-    sprintf(num, "%d ", int1);
-    strcat(count_connections[int2], num);
-  }
-
-
-  // NOTE! Just for printing, not necessary
-  for (int i=0; i<*N; i++)
-  {
-    printf("%d(%d):   %s\n", count_nodes[i], i, count_connections[i]);
-  }
-
-
-
-  /*
-  for (int i = 0; count_connections[2][i] != '\0'; i++)
-  {
-    printf("%s ", &count_connections[2][i]);
-
-    //if (&count_connections[2][i] != " ")
-    if (count_connections[2][i] != ' ' && count_connections[2][i+1] == ' ')
+    // check of legal values
+    if (int1<0 || int1>=*N || int2<0 || int2>=*N)
     {
-      int1 = atoi(&count_connections[2][i]);
-      printf("-- %d", int1);
+      printf("Illegal edge in file (line %d+5):        (%d, %d)\n", row, int1, int2);
+      tot_edges--;
     }
-    printf("\n");
-    //printf("%s \n" , &count_connections[2][i]);
+
+    // check of self-links
+    else if (int1 == int2)
+    {
+      printf("Illegal self-link in file (line %d+5):   (%d, %d)\n", row, int1, int2);
+      tot_edges--;
+    }
+
+    else
+    {
+      count_nodes[int1]++;
+      count_nodes[int2]++;
+
+      sprintf(num, "%d ", int2);
+      strcat(count_connections[int1], num);
+
+      sprintf(num, "%d ", int1);
+      strcat(count_connections[int2], num);
+    }
   }
-  */
 
 
-  printf("----------\n");
+  // allocates row_ptr and col_idx as 1D arrays (in a CRS format)
+  *row_ptr = (int*)malloc((*N+1)*sizeof(int));     // defined length of row_ptr
+  *col_idx = (int*)malloc(2*tot_edges*sizeof(int));  // defined length of col_idx
 
   int idx = 0;
   for (int node=0; node<*N; node++)
   {
+    // insert integer in row pointer
     (*row_ptr)[node+1] = (*row_ptr)[node] + count_nodes[node];
-    //for (int con=0; con<count_nodes[node]; con++)
-    //{
-    char num[10];
+
+    char num[10];     // resets the 'num' paremeter
+    // reads the counted connection and insert the integers in col_idx array
     for (int i = 0; count_connections[node][i] != '\0'; i++)
     {
-      /*
-      if (count_connections[node][i] != ' ' && count_connections[node][i+1] == ' ')
+      if (i==0 || count_connections[node][i] != ' ' && count_connections[node][i-1] == ' ')
       {
-        int1 = atoi(&count_connections[node][i]);
-        (*col_idx)[idx] = int1;
-        idx++;
-        printf("%d ", int1);
-      }
-      */
-      //printf("%s", &count_connections[node][i]);
-      if (count_connections[node][i] != ' ')
-      {
-        //printf("%s", &count_connections[node][i]);
         int1 = atoi(&count_connections[node][i]);
         sprintf(num, "%d ", int1);
-        printf("%s", num);
-
-
-        //strcat(num, &count_connections[node][i]);
-        //printf("%s ", num);
-        if (count_connections[node][i+1] == ' ' )
-        {
-          //printf("New num\n");
-          int2 = atoi(num);
-          (*col_idx)[idx] = int2;
-          idx++;
-          char num[10];
-        }
-
       }
 
+      else if (count_connections[node][i] == ' ' && count_connections[node][i-1] != ' ')
+      {
+        int2 = atoi(num);
+        (*col_idx)[idx] = int2;
+
+        idx++;
+        char num[10];
+
+      }
     }
-    printf("\n");
-    //printf("\n");
-    //scanf(count_connections[node][con+1]);
-    //printf("---%d ", count_connections[node][con+1]);
-    //col_idx[node+con] = count_connections[con];
-    //printf("%d ", con);
-    //}
-    //printf("%d ", (*row_ptr)[node]);
-
   }
 
 
-  /*
-  printf("\nrow pointer:    ");
-  for (int i=0; i<*N+1; i++)
+  if (tot_edges != N_edges)
   {
-    printf("%d ", (*row_ptr)[i]);
+    printf("Legal edges:   %d/%d\n", tot_edges, N_edges);
   }
-
-  printf("\ncolumn index:   ");
-  for (int i=0; i<2*N_edges; i++)
-  {
-    printf("%d ", (*col_idx)[i]);
-  }
-  printf("\n");
-  */
-
-
 
   free(count_nodes);
   free(count_connections);
@@ -170,16 +123,10 @@ void read_graph_from_file2(char *filename, int *N, int **row_ptr, int **col_idx)
 
 
 
-
-
-
-
-
-
-
 int main()
 {
   char *con_file = "connectivity_graph.txt";
+  //char *con_file = "combined.txt";
   //char *con_file = "simple-graph.txt";
   int nodes;
   int *row_pointer, *column_index;
@@ -189,14 +136,9 @@ int main()
   read_graph_from_file2(con_file, &nodes, &row_pointer, &column_index);
 
 
-
-
-
   // deallocate arrays from memory
   free(row_pointer);
   free(column_index);
-
-
 
   return 0;
 }
