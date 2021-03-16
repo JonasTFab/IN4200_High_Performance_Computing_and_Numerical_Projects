@@ -49,7 +49,7 @@ void read_graph_from_file2(char *filename, int *N, int **row_ptr, int **col_idx)
     fgets(read_line, len_line, file);
     fscanf(file, "%d %d", &int1, &int2);
 
-    // check of legal values
+    // check of legal edges
     if (int1<0 || int1>=*N || int2<0 || int2>=*N)
     {
       printf("Illegal edge in file (line %d+5):        (%d, %d)\n", row, int1, int2);
@@ -74,7 +74,7 @@ void read_graph_from_file2(char *filename, int *N, int **row_ptr, int **col_idx)
       sprintf(num, "%d ", int1);
       strcat(count_connections[int2], num);
     }
-  }
+  } // end of loop
 
 
   // allocates row_ptr and col_idx as 1D arrays (in a CRS format)
@@ -104,10 +104,9 @@ void read_graph_from_file2(char *filename, int *N, int **row_ptr, int **col_idx)
 
         idx++;
         char num[10];
-
-      }
-    }
-  }
+      } // end of else if
+    } // end of inner loop
+  } // end of outer loop
 
 
   if (tot_edges != N_edges)
@@ -119,26 +118,19 @@ void read_graph_from_file2(char *filename, int *N, int **row_ptr, int **col_idx)
   free(count_connections);
   fclose(file);
 
-}
 
+  /*
+  // printing the row_ptr and col_idx(for troubleshooting)
+  printf("row_ptr:   col_idx\n");
+  for (int i=0; i<*N; i++)
+  {
+    printf("%d:    ", (*row_ptr)[i]);
+    for (int j=(*row_ptr)[i]; j<(*row_ptr)[i+1]; j++)
+    {
+      printf("%d ", (*col_idx)[j]);
+    }
+    printf("\n");
+  }
+  */
 
-
-int main()
-{
-  char *con_file = "connectivity_graph.txt";
-  //char *con_file = "combined.txt";
-  //char *con_file = "simple-graph.txt";
-  int nodes;
-  int *row_pointer, *column_index;
-
-  // read a text file and from it, ...
-  //
-  read_graph_from_file2(con_file, &nodes, &row_pointer, &column_index);
-
-
-  // deallocate arrays from memory
-  free(row_pointer);
-  free(column_index);
-
-  return 0;
-}
+} // end of void function

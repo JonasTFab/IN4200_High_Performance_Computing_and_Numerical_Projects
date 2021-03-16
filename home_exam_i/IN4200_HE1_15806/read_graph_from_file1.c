@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 
+
 void read_graph_from_file1(char *filename, int *N, char ***table2D)
 {
   FILE *file;
@@ -47,23 +48,25 @@ void read_graph_from_file1(char *filename, int *N, char ***table2D)
     fgets(read_line, len_line, file);
     fscanf(file, "%d %d", &int1, &int2);
 
-    // checking if undirected edge is unique
-    if ((*table2D)[int1][int2]==1 || (*table2D)[int2][int1]==1)
+    // check of legal edges
+    if (int1<0 || int1>=*N || int2<0 || int2>=*N)
     {
+      printf("Illegal edge in file (line %d+5):        (%d, %d)\n", i, int1, int2);
       tot_edges--;
     }
 
-    // checking if edge is self-link and also nodes are
-    // not 'illegal', i.e. lower than zero and greater
-    // than the total number of nodes
-    if (int1 != int2 && int1<*N && int2<*N && int1>-1 && int2>-1)
+    // check of self-links
+    else if (int1 == int2)
+    {
+      printf("Illegal self-link in file (line %d+5):   (%d, %d)\n", i, int1, int2);
+      tot_edges--;
+    }
+
+    // inserting the legal edge to the table
+    else
     {
       (*table2D)[int1][int2] = 1;
       (*table2D)[int2][int1] = 1;
-    }
-    else
-    {
-      tot_edges--;
     }
 
   }
@@ -72,10 +75,7 @@ void read_graph_from_file1(char *filename, int *N, char ***table2D)
 
   if (N_edges != tot_edges)
   {
-    printf("Warning! \
-          \nThere were %d (out of %d) illegal edge(s)!\
-          \nThese were excluded in the 2D table!\n\n",
-          N_edges-tot_edges, N_edges);
+    printf("Legal edges:   %d/%d\n", tot_edges, N_edges);
   }
 
 }
@@ -83,7 +83,7 @@ void read_graph_from_file1(char *filename, int *N, char ***table2D)
 
 
 
-
+/*
 int main()
 {
   char *con_file = "connectivity_graph.txt";
@@ -93,6 +93,7 @@ int main()
   // read a text file and from it, reads number of nodes
   // and allocate the connectivty graph as a 2D table
   read_graph_from_file1(con_file, &nodes, &table);
+
 
 
   printf("Nodes:   %d\n", nodes);
@@ -114,3 +115,4 @@ int main()
 
   return 0;
 }
+*/
