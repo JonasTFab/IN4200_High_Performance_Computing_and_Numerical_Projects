@@ -1,5 +1,0 @@
-# Undirected graph: connectivity_graph.txt
-# Authored by 15806, a IN4200 student
-# Nodes: MUST_IMPLEMENT_#_NODES Edges: MUST_IMPLEMENT_#_EDGES
-# FromNodeId ToNodeId
-1 0 
