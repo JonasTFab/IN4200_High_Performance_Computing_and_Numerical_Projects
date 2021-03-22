@@ -7,6 +7,7 @@ $ gcc -fopenmp test_programs.c
 ```
 The program is compiled and a file named `a.out` should be created in the same folder. Before we execute the program, we need to add one or more arguments depending on what we want to run. All arguments must be integers. The first argument represents which program that should be run. You can find the listing below.
 
+```
 Argument  |	Program
 ---------------------------------------
 0         | 	read_graph_from_file1.c
@@ -14,7 +15,7 @@ Argument  |	Program
 2         | 	create_SNN_graph1.c
 3         | 	create_SNN_graph2.c
 4         | 	check_node.c
-
+```
 Program 0, 1, 2 and 3 requires no additional arguments. Program 4 require two additional arguments. The second argument after applying arguemt 4, denotes which node that is to be checked and the third argument denotes the threshold value tau. So for instance, if you want to run `read_graph_from_file2.c`, you insert the following in your terminal after you have compiled the test program.
 
 ```bash
