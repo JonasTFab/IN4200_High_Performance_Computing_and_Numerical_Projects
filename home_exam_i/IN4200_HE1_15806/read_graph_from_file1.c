@@ -38,32 +38,32 @@ void read_graph_from_file1(char *filename, int *N, char ***table2D)
 
 
   // read connections between two nodes from file
-  int int1, int2;
+  int node1, node2;
   int tot_edges = N_edges;
   for (int i=0; i<N_edges; i++)
   {
     fgets(read_line, len_line, file);
-    fscanf(file, "%d %d", &int1, &int2);
+    fscanf(file, "%d %d", &node1, &node2);
 
     // check of legal edges
-    if (int1<0 || int1>=*N || int2<0 || int2>=*N)
+    if (node1<0 || node1>=*N || node2<0 || node2>=*N)
     {
-      printf("Illegal edge in file (line %d+5):        (%d, %d)\n", i, int1, int2);
+      printf("Illegal edge in file (line %d+5):        (%d, %d)\n", i, node1, node2);
       tot_edges--;
     }
 
     // check of self-links
-    else if (int1 == int2)
+    else if (node1 == node2)
     {
-      printf("Illegal self-link in file (line %d+5):   (%d, %d)\n", i, int1, int2);
+      printf("Illegal self-link in file (line %d+5):   (%d, %d)\n", i, node1, node2);
       tot_edges--;
     }
 
     // insert the legal edge to the table
     else
     {
-      (*table2D)[int1][int2] = 1;
-      (*table2D)[int2][int1] = 1;
+      (*table2D)[node1][node2] = 1;
+      (*table2D)[node2][node1] = 1;
     }
   } // end of outer loop
 

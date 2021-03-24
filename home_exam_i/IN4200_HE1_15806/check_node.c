@@ -12,8 +12,8 @@ void check_node (int node_id, int tau, int N, int *row_ptr, int *col_idx,
   }
 
   // allocate an array for storing possible clustered nodes
-  int *cluster;
-  cluster = (int*)malloc(N*sizeof(int));
+  char *cluster;
+  cluster = (char*)malloc(N*sizeof(char));
   for (int i=0; i<N; i++)
   {
     cluster[i] = -1;  // -1 since 0 are a node by definition
@@ -25,11 +25,15 @@ void check_node (int node_id, int tau, int N, int *row_ptr, int *col_idx,
   while (check_nodes==1)
   {
     check_nodes = 0;
+    // iterates over every nodes
     for (i=0; i<N; i++)
     {
+      // if an element with 0 is found,
+      // we investigate this furhter
       if (cluster[i]==0)
       {
-        cluster[i] = 1;   // node is checked and does'nt need to be checked again
+        // node is checked and does'nt need to be checked again
+        cluster[i] = 1;
         for (j=row_ptr[i]; j<row_ptr[i+1]; j++)
         {
           if (SNN_val[j] >= tau && cluster[col_idx[j]] == -1)
@@ -56,7 +60,7 @@ void check_node (int node_id, int tau, int N, int *row_ptr, int *col_idx,
     }
   }
   if (tot_nodes != 0) tot_nodes++;
-  printf("\nThe cluster consists a total of %d node(s).\n", tot_nodes);
+  printf("\nThe cluster consists of a total of %d node(s).\n", tot_nodes);
 
   // deallocate array
   free(cluster);

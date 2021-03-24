@@ -1,5 +1,5 @@
 
-void create_SNN_graph1(int N, char**table2D, int ***SNN_table)
+void create_SNN_graph1(int N, char **table2D, int ***SNN_table)
 {
 
   // allocate the symmetric 2D SNN table
@@ -17,8 +17,7 @@ void create_SNN_graph1(int N, char**table2D, int ***SNN_table)
   int i,j,k;
   // parallelization is implemented as it fits for files
   // with many nodes and edges. dynamic is used since each
-  // iteration in outer loop has not the same length. barrier
-  // is included as each iteration is independent.
+  // iteration in outer loop has not the same length.
   #pragma omp parallel for private(i,j,k) schedule(dynamic)
     for (i=0; i<N; i++)
     {
@@ -28,12 +27,11 @@ void create_SNN_graph1(int N, char**table2D, int ***SNN_table)
       {
         for (k=0; k<N; k++)
         {
-          // first and second statement: excluding the pairwise nodes
-          // third and fourth statement: checks that both nodes are connected
+          // first state: checks that two nodes are connected to each other
+          // second and third statement: excluding pairwise nodes
+          // fourth and fifth statement: checks that both nodes are connected
           //                             to a shared node
-          // fifth state: checks that two nodes are connected to each other
-          //              before they are increasing its SNN value
-          if (k!=i && k!=j && table2D[i][k]==1 && table2D[j][k]==1 && table2D[i][j]==1)
+          if (table2D[i][j]==1 && k!=i && k!=j && table2D[i][k]==1 && table2D[j][k]==1)
           {
             (*SNN_table)[i][j]++;
             (*SNN_table)[j][i]++;
@@ -41,7 +39,6 @@ void create_SNN_graph1(int N, char**table2D, int ***SNN_table)
         } // end of inner loop 2
       } // end of inner loop 1
     } // end of outer loop
-    #pragma omp barrier
 
 
 

@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
   fprintf(file, "# Undirected graph: connectivity_graph.txt\n");
   fprintf(file, "# Authored by 15806. The connectivity-\
 graph file is generated randomly based on the inserted number of \
-nodes and the number of edges. \n");
+nodes and edges. \n");
   fprintf(file, "# Nodes: %d Edges: %d\n", nodes, edges);
   fprintf(file, "# FromNodeId ToNodeId\n");
 

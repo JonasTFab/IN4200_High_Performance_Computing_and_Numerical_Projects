@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <time.h>
 #include <stdlib.h>
 #include <string.h>
 #include <omp.h>
@@ -29,7 +28,7 @@ of threads used should be specified when compiling.
 int main(int argc, char* argv[])
 {
 
-  // an argument is required to run the test program
+  // an argument is required to run this program
   if (argc<2)
   {
     printf("Missing argument!\n");

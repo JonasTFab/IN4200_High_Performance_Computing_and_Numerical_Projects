@@ -50,7 +50,7 @@ This command will create a connectivity graph file with five nodes and eight edg
 
 ```bash
 # Undirected graph: connectivity_graph.txt
-# Authored by 15806. The connectivity-graph file is generated randomly based on the inserted number of nodes and the number of edges. 
+# Authored by 15806. The connectivity-graph file is generated randomly based on the inserted number of nodes and edges. 
 # Nodes: 5 Edges: 8
 # FromNodeId ToNodeId
 4  1
@@ -63,25 +63,5 @@ This command will create a connectivity graph file with five nodes and eight edg
 4  0
 ```
 
-
-
-
-# read_graph_from_file1.c
-
-This function reads the generated connectivity graph file and outputs the number of nodes and allocates a 2D table of size NxN. The table is then filled with 1 and 0 where 1 means connection between two nodes and 0 means no connection. Column x and row y are presented as node x and node y. Note that since x is connected to y, then y is also connected to x, hence index [x][y] and [y][x] is given the value 1. The results by using the text file generated above is shown below.
-
-
-```bash
-$ gcc read_graph_from_file1.c
-$ ./a.out
-
-Nodes:   5
-Printing 2D table: 
-0  1  0  1  1  
-1  0  1  1  1  
-0  1  0  1  0  
-1  1  1  0  1  
-1  1  0  1  0
-```
 
 

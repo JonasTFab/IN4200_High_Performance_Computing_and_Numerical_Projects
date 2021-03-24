@@ -15,22 +15,27 @@ void create_SNN_graph2(int N, int *row_ptr, int *col_idx, int **SNN_val)
 
 
   int i,j,k,h;
-  // a big mess
   // we do not need to check for self-links or illegal edges
   // as this is done when reading the text file. the following
-  // for loop is parallelized dynamically as each iteration
-  // has not the same length.
+  // for loop is parallelized dynamically as each outer
+  // iteration has not the same length.
   #pragma omp parallel for private(i,j,k,h) schedule(dynamic)
     for (i=0; i<N; i++)
     {
+      // j goes through nodes connected to i
       for (j=row_ptr[i]; j<row_ptr[i+1]; j++)
       {
+        // k goes through the same nodes as j
         for (k=row_ptr[i]; k<row_ptr[i+1]; k++)
         {
+          // neglect nodes with same index
           if (col_idx[j]!=col_idx[k])
           {
+            // loop over nodes connected to node j
             for (h=row_ptr[col_idx[j]]; h<row_ptr[col_idx[j]+1]; h++)
             {
+              // if node h connected to j share SNN with node
+              // k connected to i, then add value to SNN_val
               if (col_idx[k]==col_idx[h])
               {
                 (*SNN_val)[j]++;
