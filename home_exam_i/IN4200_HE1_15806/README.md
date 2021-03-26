@@ -1,6 +1,8 @@
+All compilation and execution has been tested only a Linux OS.
+
 # test_programs.c
 
-There are two codes only that should be compiled and tested. The first one being `create_connectivity_file.c`. Note that this code is not part of the exam. This is just in addition for creating a connectivity file that can be used in the following programs. More information on how to run this program is given in the next section. The main code in this folder is `test_program.c` and is the only code needed to answer all the tasks. We are considering high-performance computing meaning that parallelization is implemented. Because of this, we need to include the compiler flag `-fopenmp`. So the first step is to compile the code correctly with OpenMP by writing the following in a terminal window.
+There are two codes only that should be compiled and executed. The first one being `create_connectivity_file.c`. Note that this code is not part of the exam. This is just in addition for creating a connectivity file that can be used in the following programs. More information on how to run this program is given in the next section. The main code in this folder is `test_program.c` and is the only code needed to answer all the tasks. We are considering high-performance computing meaning that parallelization is implemented. Because of this, we need to include the compiler flag `-fopenmp`. So the first step is to compile the code correctly with OpenMP by writing the following in a terminal window.
 
 ```bash
 $ gcc -fopenmp test_programs.c
@@ -26,13 +28,15 @@ Note that both `read_graph_from_file` programs are runned in `create_SNN_graph` 
 ```bash
 $ ./a.out 4 1 2
 ```
-This execution example will check if node 1 is in a cluster with a given threshold value of 2. Out of the five code presented above, only the `create_SNN_graph#.c` codes are available for parallelization. When we compile the `test_programs.c` code for the first time, the OpenMP API will automatically detect the maximum number of threads to be used when executing programs. If you want to control the number of threads to be used, you need to define the number of threads before execution in a manner understood by OpenMP. This is done after compilation as following.
+This execution example will check if node 1 is in a cluster with a given threshold value of 2. Out of the five code presented above, only the `create_SNN_graph#.c` codes are available for parallelization. When we compile the `test_programs.c` code for the first time, the OpenMP API will automatically detect the maximum number of threads. If you want to control the number of threads used, you need to define the number of threads before execution in a way understood by OpenMP. This is done after compilation as following.
 
 ```bash
 $ gcc -fopenmp test_programs.c
 $ export OMP_NUM_THREADS=X
 ```
-where X can be any given number. The maximum possible number of threads is limited by the hardware of the computer used.
+where X can be any given integer. The maximum possible number of threads is limited by the hardware of the computer used. Chosing X=1 will execute the programs in a standard serial approach using a single thread while X > 1 optimize the programs by implementing parallelization using two or more threads.
+
+Note that `test_programs.c` use the connectivity graph file `facebook_combined.txt` by default. You can comment out line 69 and uncomment either line 67 or 68 to try out the example file `simple-graph.txt` or the random generated file `connectivity_graph.txt` respectively. 
 
 
 

@@ -16,13 +16,13 @@ void check_node (int node_id, int tau, int N, int *row_ptr, int *col_idx,
   cluster = (char*)malloc(N*sizeof(char));
   for (int i=0; i<N; i++)
   {
-    cluster[i] = -1;  // -1 since 0 are a node by definition
+    cluster[i] = -1;  // -1 since 0 means something else
   }
-  cluster[node_id] = 0;   // 0 means node to be checked for SNN
+  cluster[node_id] = 0;   // 0 means node to be checked for possible SNN
 
 
   int i,j, check_nodes=1, tot_nodes=0;
-  while (check_nodes==1)
+  while (check_nodes==1)   // run while loop as long as new SNN>=tau is detected
   {
     check_nodes = 0;
     // iterates over every nodes
@@ -60,7 +60,7 @@ void check_node (int node_id, int tau, int N, int *row_ptr, int *col_idx,
     }
   }
   if (tot_nodes != 0) tot_nodes++;
-  printf("\nThe cluster consists of a total of %d node(s).\n", tot_nodes);
+  printf("\nThe cluster consists of %d node(s).\n", tot_nodes);
 
   // deallocate array
   free(cluster);

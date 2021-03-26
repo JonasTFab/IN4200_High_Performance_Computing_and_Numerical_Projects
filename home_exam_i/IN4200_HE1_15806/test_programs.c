@@ -64,8 +64,8 @@ int main(int argc, char* argv[])
 
 
   // file to read during test runs
-  //char *con_file = "connectivity_graph.txt";
   //char *con_file = "simple-graph.txt";
+  //char *con_file = "connectivity_graph.txt";
   char *con_file = "facebook_combined.txt";
 
 
