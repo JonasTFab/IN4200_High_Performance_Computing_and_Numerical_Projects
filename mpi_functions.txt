@@ -1,0 +1,31 @@
+# Initialise the mpi
+MPI_Init( int *argc, char ***argv );	# Require two inputs (must be used)
+
+
+# Close/finish mpi
+MPI_Finalize(); 	# no arguments required (must be used)
+
+
+# mpi info
+int size, my_rank
+MPI_Comm_size (MPI_COMM_WORLD, &size);	# size is allocated the total number of processes
+MPI_Comm_rank (MPI_COMM_WORLD, &my_rank);	# my_rank is allocated the current processes used
+
+
+# exhange of information (sender)
+int MPI_Send(void *buffer,		# where in memory on sender side
+	     int count,		# how many data elements
+	     MPI_Datatype datatype,	# type of data
+	     int dest,			# to which process (rank of reciever process)
+	     int tag,			# must match with reciever
+	     MPI_Comm comm);		# the communicator we consider
+
+# exhange of information (reciever)
+int MPI_Recv(void *buffer,		# memory address to put recieved data
+	     int count,		# how many maximum incoming elements
+	     MPI_Datatype datatype,	# type of incoming data
+	     int source,		# who is sender
+	     int tag,			# must match with the sender
+	     MPI_Comm comm,		# must be same communicator between send and reciever
+	     MPI_Status *status);	# used to determine "unknown" parameters if any
+
