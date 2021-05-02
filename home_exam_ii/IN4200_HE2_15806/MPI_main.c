@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <mpi.h>
+#include <unistd.h>   // used for sleep
 
 #include "MPI_double_layer_convolution.c"
 #include "single_layer_convolution.c"
@@ -36,18 +37,22 @@ int main (int nargs, char **args)
 
     //srand(time(0));  // use current time as seed for generating RNG numbers
     srand(0);  // use a fixed nuber as seed for generating RNG numbers
-    // allocate the 2D array 'input' and fill it with values
-    input = (float**)malloc(M*sizeof(float*));
+    // allocate the 2D array 'input' with underlying contigupus memory
+    input = malloc(M * sizeof(input));
+    input[0] = malloc(M * N * sizeof(float));
+    for (int i=1; i<M; i++)
+    {
+      input[i] = &(input[0][i*N]);
+    }
+
+    // fill 'input' array with values
     for (int i=0; i<M; i++)
     {
-      input[i] = (float*)malloc(N*sizeof(float));
       for (int j=0; j<N; j++)
       {
-        // initiate elements in 'input' array with random number
-        // between 0 and 255 (can be associated with image data)
         input[i][j] = (int) (255.0 * rand() / RAND_MAX);
       }
-    } // end of allocating 'input'
+    }
 
 
 
@@ -121,13 +126,12 @@ int main (int nargs, char **args)
       kernel2[i] = (float*)malloc(K2*sizeof(float));
     } // end of allocating 'kernel2'
 
-  } // end of 'if (my_rank>0)' block
+  } // end of 'if (my_rank!=0)' block
 
 
 
   //DONE process 0 (root) broadcasts the content of kernels to all the other processes
   // ...
-  //MPI_Barrier(MPI_COMM_WORLD); // making sure broadcast does not happen to early
 
   for (int i=0; i<K1; i++)
   {
@@ -142,16 +146,18 @@ int main (int nargs, char **args)
 
 
   // parallel computation of a double-layer convolution
+
   MPI_double_layer_convolution(M, N, input,
                                K1, kernel1,
                                K2, kernel2,
                                output);
 
-
   MPI_Barrier(MPI_COMM_WORLD); // wait with testing untill all proceccors are done
 
 
 
+
+  sleep(1);
   if (my_rank==0)
   {
     // For example, compare the content of array ’output’ with that is
@@ -160,7 +166,7 @@ int main (int nargs, char **args)
 
 
     //    ####### Start of sequential #######
-    /*
+
     // run code with an sequential approach
     float **output_test1, **output_test2;
 
@@ -179,8 +185,18 @@ int main (int nargs, char **args)
     }
 
     single_layer_convolution(M, N, input, K1, kernel1, output_test1);
+    printf("\n\nPrint 'output_test1' array as a results of using a ");
+    printf("single layer convolution (sequential):\n\n");
+    for (int i=0; i<M-K1+1; i++)
+    {
+      for (int j=0; j<N-K1+1; j++)
+      {
+        printf("%f  ", output_test1[i][j]);
+      }
+      printf("\n");
+    }
+    /*
     single_layer_convolution(M-K1+1, N-K1+1, output_test1, K2, kernel2, output_test2);
-
     printf("Print 'output_test2' array as a results of using a ");
     printf("double layer convolution (sequential):\n\n");
     for (int i=0; i<M-K1-K2+2; i++)
@@ -192,6 +208,7 @@ int main (int nargs, char **args)
       printf("\n");
     }
     */
+
     //    ####### End of sequential #######
 
 
