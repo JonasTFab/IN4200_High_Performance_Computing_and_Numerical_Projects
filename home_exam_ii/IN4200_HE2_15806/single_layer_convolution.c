@@ -1,7 +1,7 @@
 
-void single_layer_convolution (int M, int N, float **input,
-                               int K, float **kernel,
-                               float **output)
+void single_layer_convolution(int M, int N, float **input,
+                              int K, float **kernel,
+                              float **output)
 {
   int i,j,ii,jj;
   double temp;
