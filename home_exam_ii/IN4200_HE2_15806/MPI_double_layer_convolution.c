@@ -2,22 +2,22 @@
 /*
 This program is made to perform a convolutional computation
 on a 2D array, typically on a grayscaled image. Hence, a
-2D input array should be sent as an argument as well as its
-dimension M and N. M and N defines the number of rows and
+2D 'input' array should be sent as an argument as well as its
+dimension 'M' and 'N'. 'M' and 'N' defines the number of rows and
 columns in the input array respectively. When performing the
-convolutional computation on this input array, two additional
+convolutional computation on the 'input' array, two additional
 filter kernels are required, namely 'kernel1' and 'kernel2'.
 Both are quadratric arrays with dimension 'K1' and 'K2'. The
-dimension are two important inputs as well. The last input is
-the 'output', which are the resulted array after a double
-convolutional computation and has dimension
+dimension of the kernels are two required inputs as well.
+The last input is the 'output', which is the resulted array
+after a double convolutional computation and has dimension
 (M-K1-K2+2) * (N-K1-K2+2) in the end.
 
 The program utilize MPI for performance boost. It does so
 by splitting the amount of rows 'M' from the input array into
 equal sized partitions and send them to the desired number of
 processors, also known as ranks. Each rank is then given the
-commands to perform the convolution on the given partition.
+commands to perform the convolution on their respective partition.
 */
 
 
@@ -38,7 +38,7 @@ void MPI_double_layer_convolution(int M, int N, float **input,
   // temp_arr: temporary array, contain results values after
   //           first convolutional layer
   int i, j, my_rank, procs, *counts=NULL, *displacement=NULL;
-  float **temp_arr=NULL;
+  float **temp_arr=NULL, **send_arr, **recv_arr, **output_rank;
   int M1 = M-K1+1;      // number of rows after first convolution
   int M2 = M-K1-K2+2;   // number of rows after second convolution
   int N1 = N-K1+1;      // number of columns after first convolution
@@ -187,8 +187,8 @@ void MPI_double_layer_convolution(int M, int N, float **input,
   // Therefore, we need to send K1-1 rows worth of computation from the
   // one-level higher rank to the one-lever lower rank. Both arrays is
   // allocated as a 1D contiguously array
-  float **send_arr = malloc((K1-1)*sizeof(send_arr));
-  float **recv_arr = malloc((K1-1)*sizeof(recv_arr));
+  send_arr = malloc((K1-1)*sizeof(send_arr));
+  recv_arr = malloc((K1-1)*sizeof(recv_arr));
   send_arr[0] = malloc((K1-1)*N1*sizeof(float));
   recv_arr[0] = malloc((K1-1)*N1*sizeof(float));
   for (i=1; i<(K1-1); i++)
@@ -401,7 +401,7 @@ void MPI_double_layer_convolution(int M, int N, float **input,
 
   // Allocate a partitioning 'output_rank' array that later is
   // send to the final 'output' array
-  float **output_rank = malloc(rank_rows2*sizeof(output_rank));
+  output_rank = malloc(rank_rows2*sizeof(output_rank));
   output_rank[0] = malloc(rank_rows2*N2*sizeof(float));
   for (i=1; i<rank_rows2; i++)
   {

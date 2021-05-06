@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <time.h>
 #include <mpi.h>
-//#include <unistd.h>   // used for sleep
 
 #include "MPI_double_layer_convolution.c"
 #include "single_layer_convolution.c"
@@ -11,7 +10,7 @@
 
 int main (int nargs, char **args)
 {
-  int M=0, N=0, K1=0, K2=0, my_rank;
+  int M=0, N=0, K1=0, K2=0, my_rank, errors;
   double t0_MPI, time_MPI, t0_seq, time_seq;
   float **input=NULL, **output=NULL, **kernel1=NULL, **kernel2=NULL;
 
@@ -30,11 +29,11 @@ int main (int nargs, char **args)
 
 
 
-    // Allocate 2D ’input’ array with M rows and N columns
-    srand(time(0));  // use current time as seed for generating RNG numbers
-    //srand(0);      // use a fixed nuber as seed for generating RNG numbers
+    srand(time(0));  // use current time as seed for generating random numbers
+    //srand(0);      // use a fixed seed for generating random numbers
 
-    // Allocate the 2D array 'input' as an underlying contiguous 1D array
+    // Allocate the 2D array 'input' as an underlying
+    // contiguous 1D array with M rows and N columns
     input = malloc(M*sizeof(input));
     input[0] = malloc(M*N*sizeof(float));
     for (int i=1; i<M; i++)
@@ -105,7 +104,6 @@ int main (int nargs, char **args)
         kernel2[i][j] = i - (K2/2.0 - 0.5);
       }
     } // End of filling 'kernel2' with values
-
 
   } // End of first 'if (my_rank==0)' block
 
@@ -191,7 +189,7 @@ int main (int nargs, char **args)
     }
 
     // Perform convolutional computaion on 'input' array twice using
-    // the sequential function
+    // the sequential program
     t0_seq = MPI_Wtime();
     single_layer_convolution(M, N, input, K1, kernel1, output_test1);
     single_layer_convolution(M-K1+1, N-K1+1, output_test1, K2, kernel2, output_test2);
@@ -202,21 +200,24 @@ int main (int nargs, char **args)
     printf("%f\n", time_seq/time_MPI);
 
 
-    // Check that the MPI function and the sequential function
-    // produce the same results by subtracting the square
-    // (only positive values) of each element to each other
-    float sum_elements;
+
+    // Check that the MPI program and the sequential program
+    // produce the same results by comparing each element in
+    // 'output_test2' (sequential/solution) and 'output' (MPI)
     for (int i=0; i<M-K1-K2+2; i++)
     {
       for (int j=0; j<N-K1-K2+2; j++)
       {
-        // Elements are squared to prevent false sum of zero
-        sum_elements = sum_elements + output[i][j]*output[i][j] -
-                       output_test2[i][j]*output_test2[i][j];
+        // if two elements are not equal, add 1 to 'errors'
+        if (output_test2[i][j]*output_test2[i][j] !=
+            output[i][j]*output[i][j])
+        {
+          errors++;
+        }
       }
     }
-    printf("Sum of output_MPI^2-output_sequential^2:                ");
-    printf("%.1f\n", sum_elements);
+    printf("Total non-equal elements:                               ");
+    printf("%d\n", errors);
 
     // Deallocate local arrays
     free(output_test1);

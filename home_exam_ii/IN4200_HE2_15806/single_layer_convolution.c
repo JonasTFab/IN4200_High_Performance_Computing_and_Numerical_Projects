@@ -20,4 +20,4 @@ void single_layer_convolution(int M, int N, float **input,
       }
     }
   }
-} // end of function
+}
